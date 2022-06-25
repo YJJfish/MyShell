@@ -1,0 +1,237 @@
+###global
+MyShell用户手册：
+	支持的指令：bg, cd, clr, dir, echo, exec, exit, fg, help, jobs, pwd, set, shift, test, time, umask, unset, more. 其余指令被解释为外部程序调用.
+
+	支持重定向："<", "0<"表示输入重定向；">", "1>"表示输出重定向（覆盖）；">>", "1>>"表示输出重定向（追加）；"2>"表示错误重定向（覆盖）；"2>>"表示错误重定向（追加）.
+
+	支持管道符：使用"|"分隔多个指令，前一个指令的输出是下一个指令的输入. 第一个指令的输入是标准输入, 最后一个指令的输出是标准输出.
+
+	支持作业控制：快捷键Ctrl+Z能挂起前台作业；快捷键Ctrl+C能终止前台作业. bg、fg、jobs指令的用法请查询对应的帮助手册.
+
+	支持执行外部脚本：命令MyShell BatchFile表示从BatchFile中获取命令并执行.
+
+	更多指令帮助，请使用"help 指令名"获取对应帮助. 
+
+###bg
+命令格式：
+	bg
+	bg WorkID
+指令解释：
+	无参执行bg时，表示输出所有正在后台运行的作业信息。
+	有参数时，表示把指定ID的作业（被挂起）转到后台继续运行。
+
+###cd
+命令格式：
+	cd
+	cd pathname
+指令解释：
+	无参执行cd时表示进入用户的主目录。
+	有参数时，表示进入参数指定的目录。
+	每次执行成功会更新PWD环境变量。可以用echo $PWD查看。
+
+###clr
+命令格式：
+	clr
+指令解释：
+	清屏。
+
+###dir
+命令格式：
+	dir
+	dir pathname
+指令解释：
+	无参执行dir指令时表示列出当前目录下的文件。
+	有参数时dir列出参数指定的目录下的文件。
+
+###echo
+命令格式：
+	echo arg1 arg2 arg3 ... argN
+指令解释：
+	输出内容并换行。argi可以是字符串，也可以是以'$'开头的变量引用。
+	如果是形如"$0""$1""${10}"这样的字符串，则表示对应的参数值。
+	如果是"$#"则表示参数个数。
+	其余情况，例如"$HOME"，则表示名为"HOME"的环境变量值。
+
+###exec
+命令格式：
+	exec ProgramName arg1 arg2 ... argN
+指令解释：
+	执行外部程序。该指令会将外部程序的代码替换MyShell的代码段。因此，若exec执行成功，MyShell会直接
+出。
+	如不想退出MyShell，可以直接输入外部程序名而不加exec指令，MyShell也会将其解释为外部程序调用。
+
+###exit
+命令格式：
+	exit
+指令解释：
+	退出MyShell。
+
+###fg
+命令格式：
+	fg WorkID
+指令解释：
+	fg命令把指定ID的作业（被挂起或正在后台运行）转移到前台运行。
+
+###help
+命令格式：
+	help
+	help cmd
+指令解释：
+	不加参数时输出MyShell用户帮助手册，加参数时输出对应的指令帮助手册。
+
+###jobs
+命令格式：
+	jobs
+指令解释：
+	输出所有被挂起或后台运行的作业信息。
+
+###pwd
+命令格式：
+	pwd
+指令解释：
+	输出当前目录路径。等价于echo $PWD。
+
+###set
+命令格式：
+	set
+	set value1 value2 value3 ... valueN
+指令解释：
+	无参执行set时表示输出所有环境变量的值。
+	有参数时，表示把$0，$1，$2等参数赋值成对应的值。和echo指令一样，这里的value1, value2, ..., value
+也可以是以'$'开头的变量引用。
+	例如"set $PWD $HOME"表示把环境变量PWD赋值给第1个参数，把环境变量HOME赋值给第2个参数，并抛弃第3个
+及后面的参数。
+	例如"set $2 $1"表示把第1个参数和第2个参数的值交换，并抛弃第3个以及后面的参数。
+
+###shift
+命令格式：
+	shift
+	shift Integer
+指令解释：
+	无参执行shift时表示把$1, $2, $3等参数左移一次。$0的值保持不变。
+	有参数时，按参数指定的数值进行左移。参数必须是非负整数。
+
+###test
+命令格式：
+	文件存在
+	test -e File
+
+	文件存在且可读
+	test -r File
+
+	文件存在且可写
+	test -w File
+
+	文件存在且可执行
+	test -x File
+
+	文件存在且至少有一个字符
+	test -s File
+
+	文件为目录文件
+	test -d File
+
+	文件为普通文件
+	test -f File
+
+	文件为字符型特殊文件
+	test -c File
+
+	文件为块特殊文件
+	test -b File
+
+	文件为符号链接
+	test -h File
+	test -L File
+
+	文件为命名管道
+	test -p File
+
+	文件为嵌套字
+	test -S File
+
+	文件被当前实际组拥有
+	test -G File
+
+	文件被当前实际用户拥有
+	test -O File
+
+	文件设置了setgid bit
+	test -g File
+
+	文件设置了setuid bit
+	test -u File
+
+	文件设置了sticky bit
+	test -k File
+
+	字符串长度非0
+	test -n String
+
+	字符串长度为0
+	test -z String
+
+	文件1和文件2的设备号和inode相同
+	test File1 -ef File2
+
+	文件1比文件2新
+	test File1 -nt File2
+
+	文件1比文件2旧
+	test File1 -ot File2
+
+	字符串相等
+	test String1 = String2
+
+	字符串不等
+	test String1 != String2
+
+	整数相等
+	test Integer1 -eq Integer2
+
+	整数大于等于
+	test Integer1 -ge Integer2
+
+	整数大于
+	test Integer1 -gt Integer2
+
+	整数小于等于
+	test Integer1 -le Integer2
+
+	整数小于
+	test Integer1 -lt Integer2
+
+	整数不相等
+	test Integer1 -ne Integer2
+
+指令解释：
+	根据运算符进行测试，输出true或false。
+	可以引用变量，例如"test $1 -eq $2"表示测试参数1和参数2是否相等（前提是两者都是整数）。
+
+###time
+命令格式：
+	time
+指令解释：
+	显示当前的系统时间。
+
+###umask
+命令格式：
+	umask
+	umask o
+	umask oo
+	umask ooo
+指令解释：
+	umask无参时，表示输出当前的umask值。
+	否则，umask接受至多3位8进制数，然后设置新的umask值。当数值不足3位时，默认向右对齐（高位补0）。
+
+###unset
+命令格式：
+	unset Variable
+指令解释：
+	删除指定的环境变量。
+
+###more
+命令格式：
+	more FileName
+
+###
